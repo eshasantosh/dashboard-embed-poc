@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>POC Embed Demo</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                margin: 20px;
+            }
+            .tab-container {
+                overflow: hidden;
+                border-bottom: 1px solid #ccc;
+            }
+            .tab-button {
+                background-color: #ffffff;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+            }
+            .tab-button:hover {
+                background-color: #ddd;
+            }
+            .tab-button.active {
+                font-weight: bold;
+                border-bottom: 2px solid #0f172b;
+            }
+            .tab-content {
+                display: none;
+                padding: 20px 12px;
+                border-top: none;
+            }
+            iframe {
+                border: 0px solid #ccc;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Embedding Demo</h2>
+
+        <div class="tab-container">
+            <button
+                class="tab-button"
+                onclick="openTab(event, 'Metabase')"
+                id="defaultOpen"
+            >
+                Metabase Dashboard
+            </button>
+
+            <button class="tab-button" onclick="openTab(event, 'Superset')">
+                SuperSet Dashboard
+            </button>
+
+            <button class="tab-button" onclick="openTab(event, 'QueryTree')">
+                QueryTree Report Builder
+            </button>
+        </div>
+
+        <div id="Metabase" class="tab-content">
+            <iframe
+                id="metabase-iframe"
+                src=""
+                frameborder="0"
+                width="100%"
+                height="1300"
+                allowtransparency
+            ></iframe>
+        </div>
+
+        <div id="Superset" class="tab-content">
+            <iframe
+                src="{{ superset_url }}"
+                frameborder="0"
+                width="100%"
+                height="700"
+                allowtransparency
+            ></iframe>
+        </div>
+
+        <div id="QueryTree" class="tab-content">
+            <iframe
+                src="{{ querytree_url }}"
+                style="width: 100%; height: 700px"
+                allowtransparency
+            ></iframe>
+        </div>
+
+        <script>
+            // --- Tab Switching Logic ---
+            function openTab(evt, tabName) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tab-button");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(
+                        " active",
+                        "",
+                    );
+                }
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+
+            // --- Metabase URL Fetching Logic ---
+            document.addEventListener("DOMContentLoaded", function () {
+                // Fetch the secure URL from our server backend
+                fetch("/get-metabase-url")
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const iframe =
+                            document.getElementById("metabase-iframe");
+                        iframe.src = data.url;
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching Metabase URL:", error);
+                        document.getElementById("Metabase").innerHTML =
+                            "<h3>Error</h3><p>Could not load the Metabase dashboard. Check the console and make sure the backend server is running.</p>";
+                    });
+
+                // Open the first tab by default
+                document.getElementById("defaultOpen").click();
+            });
+        </script>
+    </body>
+</html>

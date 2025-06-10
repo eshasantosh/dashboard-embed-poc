@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  poc-embed:
+    build: .
+    ports:
+      - "${PORT:-9999}:${PORT:-9999}"
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=development
+    volumes:
+      - .:/app
+    command: python app.py
+    networks:
+      - dashboard-network
+
+networks:
+  dashboard-network:
+    driver: bridge
