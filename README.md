@@ -31,10 +31,17 @@ Edit `.env` with your values:
 METABASE_SITE_URL=http://localhost:3000
 METABASE_SECRET_KEY=your_secret
 METABASE_DASHBOARD_ID=2
-SUPERSET_URL=http://localhost:8088/superset/dashboard/12/
+SUPERSET_URL=http://localhost:8089/superset/dashboard/12/
 QUERYTREE_URL=http://localhost:8082
 PORT=9999
 ```
+
+## Setup
+1. Install nginx: `brew install nginx`
+2. Start nginx proxy: `nginx -c $(pwd)/nginx.conf`
+3. Run Flask app: `python app.py`
+4. Stop nginx: `nginx -s quit`
+
 
 ### Run Locally
 
